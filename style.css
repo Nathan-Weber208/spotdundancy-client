@@ -1,0 +1,49 @@
+#playlist-container ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+#playlist-container li {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin: 10px;
+    padding: 10px;
+    width: 200px;
+    text-align: center;
+}
+
+#playlist-container li img {
+    max-width: 100px;
+    display: block;
+    margin: 0 auto 10px;
+}
+
+#playlist-container .track-details h3 {
+    font-size: 16px;
+    margin: 0;
+}
+
+#playlist-container .track-details p {
+    font-size: 12px;
+    margin: 5px 0;
+}
+
+
+/* Apply styles to the header element */
+header {
+    background-color: #007BFF;
+    /* Change the background color to blue */
+    padding: 10px;
+    /* Add some padding to the header */
+    text-align: center;
+    /* Center-align the content within the header */
+    color: #fff;
+    /* Set the text color to white */
+    font-size: 20px;
+    /* Increase the font size */
+}
+
+
+

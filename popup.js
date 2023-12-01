@@ -2,8 +2,9 @@
 document.addEventListener("DOMContentLoaded", function () {
   const urlElement = document.getElementById("url");
   const closeButton = document.getElementById("closeButton");
-  const collectPlaylistButton = document.getElementById("collectPlaylistButton");
-
+  const DownloadMP3Button = document.getElementById("DownloadMP3Button");
+  const DownloadCSVButton = document.getElementById("DownloadCSVButton");
+  const SeePlaylistButton = document.getElementById("SeePlaylistButton");
 
   // Get the current URL and display it in the popup
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
@@ -11,55 +12,59 @@ document.addEventListener("DOMContentLoaded", function () {
     urlElement.textContent = url;
   });
 
-  // Define the behavior for the Close button
+  // Close button
   closeButton.addEventListener("click", () => {
     window.close();
   });
 
-  collectPlaylistButton.addEventListener("click", async () => {
-    const url = urlElement.textContent;
-    // I should probably hide this... ill ask jacob about it
-    const clientId = '6c07df458f764d6eba746f4f3d282efc';
-    const clientSecret = '13e852c924834ab9a87c2e4d9f4c3215';
-
-    // Get client access token
-    const accessToken = await getAccessToken(clientId, clientSecret);
-
-    if (accessToken) {
-      // Get playlist details
-      const playlistData = await getPlaylistDetails(url, accessToken);
-
-      if (playlistData) {
-        // Save playlist to CSV
-        savePlaylistToCSV(playlistData.playlistName, playlistData.tracks);
-      } else {
-        console.error('Failed to get playlist details');
-      }
-    } else {
-      console.error('Failed to get access token');
-    }
+  // Download CSV button
+  DownloadCSVButton.addEventListener("click", async () => {
+    const playlistData = await getPlaylistDetails();
+    savePlaylistToCSV(playlistData.playlistName, playlistData.tracks);
   });
+
+  // Download MP3 button
+  DownloadMP3Button.addEventListener("click", async () => {
+    const playlistData = await getPlaylistDetails();
+    console.log("playlistData:")
+    console.log(playlistData);
+
+    console.log("JSON:")
+    console.log(JSON.stringify(playlistData));
+  });
+
+  // See Playlist button
+  SeePlaylistButton.addEventListener("click", async () => {
+    const playlistData = await getPlaylistDetails();
+
+    chrome.storage.local.set({ 'playlistData': playlistData }, function () {
+      console.log('Playlist data saved');
+      chrome.tabs.create({ url: 'viewingportal.html' });
+    });
+  });
+
+
 });
 
 async function savePlaylistToCSV(playlistName, playlistDetails) {
   try {
-      if (!playlistDetails) {
-          console.error('Failed to get playlist details');
-          return;
-      }
+    if (!playlistDetails) {
+      console.error('Failed to get playlist details');
+      return;
+    }
 
-      const csvContent = convertToCSV(playlistDetails);
-      const blob = new Blob([csvContent], { type: 'text/csv' });
+    const csvContent = convertToCSV(playlistDetails);
+    const blob = new Blob([csvContent], { type: 'text/csv' });
 
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = `${playlistName}_playlist.csv`;
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `${playlistName}_playlist.csv`;
 
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
   } catch (error) {
-      console.error('Error while saving playlist to CSV:', error);
+    console.error('Error while saving playlist to CSV:', error);
   }
 }
 
@@ -114,8 +119,12 @@ async function getAccessToken(clientId, clientSecret) {
   }
 }
 
-async function getPlaylistDetails(playlistUrl, accessTokenPromise) {
+async function getPlaylistDetails() {
+  const urlElement = document.getElementById('url');
   try {
+    // Get the URL from the urlElement
+    const playlistUrl = urlElement.textContent;
+
     // Extract the playlist ID from the URL if provided
     const playlistIdMatch = playlistUrl.match(/playlist\/(\w+)/);
     if (!playlistIdMatch) {
@@ -123,8 +132,15 @@ async function getPlaylistDetails(playlistUrl, accessTokenPromise) {
     }
     const playlistId = playlistIdMatch[1];
 
-    // Get the access token by awaiting the promise
-    const accessToken = await accessTokenPromise;
+    // Define client ID and secret
+    const clientId = '6c07df458f764d6eba746f4f3d282efc';
+    const clientSecret = '13e852c924834ab9a87c2e4d9f4c3215';
+
+    // Get the access token
+    const accessToken = await getAccessToken(clientId, clientSecret);
+    if (!accessToken) {
+      throw new Error('Failed to get access token');
+    }
 
     // Spotify API endpoint for getting playlist details
     const playlistEndpoint = `https://api.spotify.com/v1/playlists/${playlistId}`;
@@ -142,6 +158,11 @@ async function getPlaylistDetails(playlistUrl, accessTokenPromise) {
 
     if (response.ok) {
       const playlistData = await response.json();
+
+      if (!playlistData) {
+        console.error('Playlist data is null or undefined');
+        return null;
+      }
 
       const playlistName = playlistData.name;
 

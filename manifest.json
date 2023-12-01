@@ -3,7 +3,7 @@
   "name": "Spotify Playlist Popup",
   "version": "1.0",
   "description": "Creates a popup for Spotify playlists.",
-  "permissions": ["activeTab"],
+  "permissions": ["activeTab", "tabs", "storage"],
   "background": {
     "service_worker": "background.js"
   },
