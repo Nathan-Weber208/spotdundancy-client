@@ -132,7 +132,7 @@ async function getPlaylistDetails() {
     }
     const playlistId = playlistIdMatch[1];
 
-    // Define client ID and secret
+    //  JACOB'S CLIENT ID AND SECRET!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     const clientId = '6c07df458f764d6eba746f4f3d282efc';
     const clientSecret = '13e852c924834ab9a87c2e4d9f4c3215';
 
