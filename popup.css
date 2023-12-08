@@ -1,14 +1,64 @@
 body {
     font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
-    padding: 20px;
+    background-color: #fff;
     color: #333;
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: flex-start;
     min-width: 500px;
+    margin: 0;
     border-bottom-left-radius: 100px;
     border-bottom-right-radius: 100px;
+}
+
+#credentialsForm {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
+    width: 80%;
+    max-width: 500px;
+}
+
+#credentialsForm label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 5px;
+}
+
+#credentialsForm input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+}
+
+button {
+    padding: 10px 20px;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    color: white;
+}
+
+#saveButton, #DownloadCSVButton, #DownloadMP3Button {
+    background-color: #1DB954; /* Spotify green */
+}
+
+#SeePlaylistButton {
+    background-color: #007BFF; /* Blue */
+}
+
+#closeButton {
+    background-color: #FF0000; /* Red */
+    align-self: flex-end;
+    margin-top: auto;
+}
+
+button:hover {
+    opacity: 0.8;
 }
 
 #playlistName {
@@ -26,36 +76,4 @@ div {
     display: flex;
     justify-content: space-between;
     width: 100%;
-}
-
-button {
-    padding: 10px 20px;
-    font-size: 16px;
-    margin: 4px 2px;
-    cursor: pointer;
-}
-
-#DownloadCSVButton,
-#DownloadMP3Button {
-    background-color: #4CAF50;
-    /* Green */
-    color: white;
-}
-
-#SeePlaylistButton {
-    background-color: #007BFF;
-    /* Blue */
-    color: white;
-}
-
-#closeButton {
-    background-color: #FF0000;
-    /* Red */
-    color: white;
-    align-self: flex-end;
-    margin-top: auto;
-}
-
-button:hover {
-    opacity: 0.8;
 }
